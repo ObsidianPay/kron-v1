@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "Create a new invoice and send it to your customers",
 };
 
-async function createInvoice(formData: FormData) {
+async function createInvoice() {
   'use server'
   const stripe = require('stripe')(process.env.STRIPE_TEST_KEY);
 
@@ -27,12 +27,13 @@ async function createInvoice(formData: FormData) {
   //console.log(userId);
   const stripeId = await clerkClient.users.getUser(userId);
   const stripeAcc = stripeId.privateMetadata.stripeAccId;
+  const form = new FormData;
 
   try {
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const amount = formData.get('amount') as unknown as number;
-    const description = formData.get('description') as string;
+    const name = form.get('name') as string;
+    const email = form.get('email') as string;
+    const amount = form.get('amount') as unknown as number;
+    const description = form.get('description') as string;
     const accid = stripeAcc;
     const sendFlag = true;
 
