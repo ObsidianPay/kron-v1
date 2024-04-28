@@ -17,7 +17,8 @@ export const metadata: Metadata = {
     "Create a new invoice and send it to your customers",
 };
 
-async function createInvoice() {
+export default function CreateInvoice() {
+async function createInvoice(form: FormData) {
   'use server'
   const stripe = require('stripe')(process.env.STRIPE_TEST_KEY);
 
@@ -27,7 +28,6 @@ async function createInvoice() {
   //console.log(userId);
   const stripeId = await clerkClient.users.getUser(userId);
   const stripeAcc = stripeId.privateMetadata.stripeAccId;
-  const form = new FormData;
 
   try {
     const name = form.get('name') as string;
@@ -84,8 +84,8 @@ async function createInvoice() {
     // Return error response
     console.error('An error occurred while creating the invoice');
 }
-
-  return(
+}
+return(
   <DefaultLayout>
       <Breadcrumb pageName="Create Invoice" />
 
@@ -109,7 +109,7 @@ async function createInvoice() {
                       type="text"
                       id="name"
                       name="name"
-                      placeholder="Enter your name"
+                      placeholder="Jack Doe"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
@@ -123,7 +123,7 @@ async function createInvoice() {
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="Enter your email address"
+                    placeholder="test@xyz.com"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                 </div>
@@ -164,7 +164,7 @@ async function createInvoice() {
                   </label>
                   <input
                     type="text"
-                    placeholder="Amount"
+                    placeholder="10"
                     id="amount"
                     name="amount"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -196,5 +196,3 @@ async function createInvoice() {
     </DefaultLayout>
     )
 }
-
-export default createInvoice;
