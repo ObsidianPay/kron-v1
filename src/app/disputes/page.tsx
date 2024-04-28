@@ -9,9 +9,9 @@ import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedRea
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
-  title: "Next.js Tables | TailAdmin - Next.js Dashboard Template",
+  title: "Disputes | Kron",
   description:
-    "This is Next.js Tables page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+    "Check all the disputes that have been created and sent to your account",
 };
 
 function unixTimeToDate(unixTime: string) {

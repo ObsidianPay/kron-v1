@@ -6,12 +6,15 @@ import { FormEvent } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
+import { useState } from "react";
+import { redirect } from "next/navigation";
+import SubmitButton from "./submit";
 
 
 export const metadata: Metadata = {
-  title: "Next.js Form Layout | TailAdmin - Next.js Dashboard Template",
+  title: "Create Invoice | Kron",
   description:
-    "This is Next.js Form Layout page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+    "Create a new invoice and send it to your customers",
 };
 
 async function createInvoice(formData: FormData) {
@@ -69,14 +72,9 @@ async function createInvoice(formData: FormData) {
     if (sendFlag) {
         await stripe.invoices.sendInvoice(invoice.id, {stripeAccount: accid});
         console.log('Invoice sent successfully');
-        const notifySuccess = () => toast.success('Invoice sent successfully', {
-          position: "top-right",
-        });
+        
     } else {
         console.log('Invoice created successfully');
-        const notifySuccess = () => toast.success('Invoice created successfully', {
-          position: "top-right",
-        });
     }        
 } catch (error) {
     // Log the error
@@ -85,6 +83,7 @@ async function createInvoice(formData: FormData) {
     // Return error response
     console.error('An error occurred while creating the invoice');
 }
+
   return(
   <DefaultLayout>
       <Breadcrumb pageName="Create Invoice" />
@@ -184,9 +183,7 @@ async function createInvoice(formData: FormData) {
                   />
                 </div>
 
-                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-                  Send Invoice
-                </button>
+                <SubmitButton />
               </div>
             </form>
           </div>
@@ -195,7 +192,8 @@ async function createInvoice(formData: FormData) {
         
       </div>
       <ToastContainer />
-    </DefaultLayout>)
+    </DefaultLayout>
+    )
 }
 
 export default createInvoice;

@@ -8,11 +8,14 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { clerkClient } from "@clerk/nextjs/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedReactNode } from "react";
+import { cookies } from "next/headers";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import ToastMsg from "./toast";
 
 export const metadata: Metadata = {
-  title: "Next.js Tables | TailAdmin - Next.js Dashboard Template",
+  title: "Check Invoices | Kron",
   description:
-    "This is Next.js Tables page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
+    "Check all the invoices that have been created and sent to your customers",
 };
 
 function unixTimeToDate(unixTime: string) {
@@ -32,7 +35,7 @@ async function listInvoices() {
 
   const invoiceData = await stripe.invoices.list(
     {
-      limit: 50,
+      limit: 500,
     },
     {
       stripeAccount: stripeAcc,
@@ -42,13 +45,12 @@ async function listInvoices() {
   //console.log(invoiceData);
 
   const jsonData = JSON.parse(JSON.stringify(invoiceData.data));
-
   //console.log(jsonData);
 
   return (
     <DefaultLayout>
+      <ToastMsg />
       <Breadcrumb pageName="Tables" />
-
       <div className="flex flex-col gap-10">
       <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
