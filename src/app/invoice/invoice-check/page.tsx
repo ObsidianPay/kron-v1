@@ -5,6 +5,8 @@ import TableTwo from "@/components/Tables/TableTwo";
 
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import { clerkClient } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedReactNode } from "react";
 
 export const metadata: Metadata = {
@@ -21,17 +23,27 @@ async function listInvoices() {
   'use server'
   const stripe = require('stripe')(process.env.STRIPE_TEST_KEY);
 
-  const invoiceData = await stripe.invoices.list({
-    limit: 25,
-  }, {
-    stripeAccount: 'acct_1PA9V0R488zMsxO8',
-  });
+  const user = await currentUser();
+  var userId = user?.id ?? '';
+  userId = userId.toString();
+  //console.log(userId);
+  const stripeId = await clerkClient.users.getUser(userId);
+  const stripeAcc = stripeId.privateMetadata.stripeAccId;
 
-  console.log(invoiceData);
+  const invoiceData = await stripe.invoices.list(
+    {
+      limit: 50,
+    },
+    {
+      stripeAccount: stripeAcc,
+    }
+  );
+
+  //console.log(invoiceData);
 
   const jsonData = JSON.parse(JSON.stringify(invoiceData.data));
 
-  console.log(jsonData);
+  //console.log(jsonData);
 
   return (
     <DefaultLayout>

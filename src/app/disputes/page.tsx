@@ -6,6 +6,7 @@ import TableTwo from "@/components/Tables/TableTwo";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedReactNode, Key } from "react";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 
 export const metadata: Metadata = {
   title: "Next.js Tables | TailAdmin - Next.js Dashboard Template",
@@ -21,10 +22,17 @@ async function listDisputes() {
   'use server'
   const stripe = require('stripe')(process.env.STRIPE_TEST_KEY);
 
+  const user = await currentUser();
+  var userId = user?.id ?? '';
+  userId = userId.toString();
+  //console.log(userId);
+  const stripeId = await clerkClient.users.getUser(userId);
+  const stripeAcc = stripeId.privateMetadata.stripeAccId;
+
   const disputeData = await stripe.disputes.list({
     limit: 25,
   }, {
-    stripeAccount: 'acct_1PA9V0R488zMsxO8',
+    stripeAccount: stripeAcc,
   });
 
   console.log(disputeData);

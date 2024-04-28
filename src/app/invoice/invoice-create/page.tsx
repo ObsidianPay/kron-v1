@@ -5,6 +5,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { FormEvent } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
 
 
 export const metadata: Metadata = {
@@ -17,12 +18,19 @@ async function createInvoice(formData: FormData) {
   'use server'
   const stripe = require('stripe')(process.env.STRIPE_TEST_KEY);
 
+  const user = await currentUser();
+  var userId = user?.id ?? '';
+  userId = userId.toString();
+  //console.log(userId);
+  const stripeId = await clerkClient.users.getUser(userId);
+  const stripeAcc = stripeId.privateMetadata.stripeAccId;
+
   try {
     const name = formData.get('name') as string;
     const email = formData.get('email') as string;
     const amount = formData.get('amount') as unknown as number;
     const description = formData.get('description') as string;
-    const accid = formData.get('accid') as string;
+    const accid = stripeAcc;
     const sendFlag = true;
 
     // console.log(name, email, address, phone, amount, description, accid, sendFlag);
@@ -172,19 +180,6 @@ async function createInvoice(formData: FormData) {
                     placeholder="Description"
                     id="description"
                     name="description"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>
-
-                <div className="mb-4.5">
-                  <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                    Account ID
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="ID"
-                    id="accid"
-                    name="accid"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                 </div>

@@ -5,15 +5,24 @@ import ChatCard from "../Chat/ChatCard";
 import TableOne from "../Tables/TableOne";
 import CardDataStats from "../CardDataStats";
 import MapOne from "../Maps/MapOne";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
+import { RedirectToSignIn, SignedOut } from "@clerk/nextjs";
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 
 async function dashboard() {
   'use server'
+
+  const user = await currentUser();
+  var userId = user?.id ?? '';
+  userId = userId.toString();
+  //console.log(userId);
+  const stripeId = await clerkClient.users.getUser(userId);
+  const stripeAcc = stripeId.privateMetadata.stripeAccId;
+  
   const balance = await stripe.balance.retrieve({
-    stripeAccount: "acct_1PA9V0R488zMsxO8",
+    stripeAccount: stripeAcc,
   });
-  //console.log(balance);
   const bal = parseFloat(balance.pending[0].amount)/100;
   const balAvailable = parseFloat(balance.available[0].amount)/100;
 
@@ -23,21 +32,22 @@ async function dashboard() {
   const disputes = await stripe.disputes.list({
     limit: 1000,
   }, {
-    stripeAccount: "acct_1PA9V0R488zMsxO8",
+    stripeAccount: stripeAcc,
   });
-  //console.log(disputes);
   const countDispute = disputes.data.length;
 
   const invoices = await stripe.invoices.list({
     limit: 1000,
   }, {
-    stripeAccount: "acct_1PA9V0R488zMsxO8",
+    stripeAccount: stripeAcc,
   });
-  console.log(invoices);
   const countInvoice = invoices.data.length;
 
   return (
     <>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats title="Pending Balance" total={strBal} rate="0%" levelUp>
           <svg
