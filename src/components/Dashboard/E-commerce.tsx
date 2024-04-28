@@ -8,7 +8,7 @@ import MapOne from "../Maps/MapOne";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { RedirectToSignIn, SignedOut } from "@clerk/nextjs";
 
-const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 async function dashboard() {
   'use server'

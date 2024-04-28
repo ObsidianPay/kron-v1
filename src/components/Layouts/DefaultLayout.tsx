@@ -2,6 +2,8 @@
 import React, { useState, ReactNode } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import { RedirectToSignIn, SignedOut } from "@clerk/nextjs";
+import Footer from "../Footer/brand";
 
 export default function DefaultLayout({
   children,
@@ -12,6 +14,9 @@ export default function DefaultLayout({
   return (
     <>
       {/* <!-- ===== Page Wrapper Start ===== --> */}
+      <SignedOut>
+          <RedirectToSignIn />
+      </SignedOut>
       <div className="flex h-screen overflow-hidden">
         {/* <!-- ===== Sidebar Start ===== --> */}
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -30,6 +35,7 @@ export default function DefaultLayout({
             </div>
           </main>
           {/* <!-- ===== Main Content End ===== --> */}
+          <Footer />
         </div>
         {/* <!-- ===== Content Area End ===== --> */}
       </div>

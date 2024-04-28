@@ -24,7 +24,7 @@ function unixTimeToDate(unixTime: string) {
 
 async function listInvoices() {
   'use server'
-  const stripe = require('stripe')(process.env.STRIPE_TEST_KEY);
+  const stripe = require('stripe')(process.env.STRIPE_KEY);
 
   const user = await currentUser();
   var userId = user?.id ?? '';
