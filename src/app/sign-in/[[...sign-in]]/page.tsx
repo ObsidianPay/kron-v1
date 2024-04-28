@@ -10,7 +10,11 @@ export const metadata: Metadata = {
 export default function Page() {
 return (
     <div className="flex justify-center items-center h-screen">
-        <SignIn path="/sign-in" />
+        <SignIn path="/sign-in" appearance={{
+          elements: {
+            footerAction: {display: "none"},
+          }
+        }} />
     </div>
 );
 }
