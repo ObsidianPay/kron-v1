@@ -71,7 +71,7 @@ async function createInvoice(form: FormData) {
 
     // Send the invoice if sendFlag is true
     if (sendFlag) {
-        await stripe.invoices.sendInvoice(invoice.id, {stripeAccount: accid});
+        await stripe.invoices.finalizeInvoice(invoice.id, {stripeAccount: accid});
         console.log('Invoice sent successfully');
         
     } else {
